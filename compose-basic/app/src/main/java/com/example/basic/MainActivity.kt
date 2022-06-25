@@ -31,11 +31,23 @@ class MainActivity : ComponentActivity() {
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text("Hello")
-                        Text("World")
+                        Greeting("안녕")
                     }
                 }
             }
         }
+    }
+}
+
+@Composable
+fun Greeting(name: String) {
+    Text("hello $name.")
+}
+
+@Preview(showBackground = true)
+@Composable
+fun DefaultPreview() {
+    JetpackBasicTheme() {
+        Greeting("name")
     }
 }
