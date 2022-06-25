@@ -20,34 +20,20 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            JetpackBasicTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(color = MaterialTheme.colors.background) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .background(color = Color.Blue)
-                            .padding(16.dp),
-                        horizontalAlignment = Alignment.CenterHorizontally,
-                        verticalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Greeting("안녕")
-                    }
+            Box(modifier = Modifier
+                .background(color = Color.Green)
+                .fillMaxWidth()
+                .height(200.dp)
+            ) {
+                Text(text = "Hello World!")
+                Box(modifier = Modifier
+                    .fillMaxSize()
+                    .padding(16.dp),
+                    contentAlignment = Alignment.BottomEnd
+                ) {
+                    Text(text = "Hi")
                 }
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String) {
-    Text("hello $name.")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    JetpackBasicTheme() {
-        Greeting("name")
     }
 }
