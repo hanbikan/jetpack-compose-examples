@@ -14,75 +14,53 @@ import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.example.basic.ui.theme.JetpackBasicTheme
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
+    @OptIn(ExperimentalComposeUiApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            var isFavorite by rememberSaveable {
-                mutableStateOf(false)
+            val (text, setValue) = remember {
+                mutableStateOf("")
             }
-            ImageCard(
-                modifier = Modifier
-                    .fillMaxWidth(0.5f)
-                    .padding(16.dp),
-                isFavorite = isFavorite
-            ) {
-                isFavorite = it
-            }
-        }
-    }
-}
 
-@Composable
-fun ImageCard(
-    modifier: Modifier = Modifier,
-    isFavorite: Boolean,
-    onClick: (Boolean) -> Unit
-) {
-    Card(
-        modifier = modifier,
-        shape = RoundedCornerShape(8.dp),
-        elevation = 4.dp
-    ) {
-        Box(
-            modifier = Modifier
-                .height(200.dp)
-        ) {
-            Image(
-                modifier = Modifier.fillMaxSize(),
-                painter = painterResource(id = R.drawable.tp_in_rect),
-                contentDescription = "An example",
-                contentScale = ContentScale.Crop
-            )
-            Box(
-                modifier = Modifier.fillMaxSize(),
-                contentAlignment = Alignment.TopEnd
+            val scaffoldState = rememberScaffoldState()
+            val scope = rememberCoroutineScope()
+            val keyboardController = LocalSoftwareKeyboardController.current
+
+            Scaffold(
+                scaffoldState = scaffoldState
             ) {
-                IconButton(onClick = {
-                    onClick.invoke(!isFavorite)
-                }) {
-                    Icon(
-                        imageVector =
-                            if (isFavorite) Icons.Default.Favorite
-                            else Icons.Default.FavoriteBorder,
-                        contentDescription = "FavoriteBorder",
-                        tint = Color.White
+                Column(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.Center,
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    TextField(
+                        value = text,
+                        onValueChange = setValue,
                     )
+                    Button(onClick = {
+                        scope.launch {
+                            scaffoldState.snackbarHostState.showSnackbar("$text is good.")
+                        }
+                        keyboardController?.hide()
+                    }) {
+                        Text("Click")
+                    }
                 }
             }
         }
