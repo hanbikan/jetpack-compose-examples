@@ -3,6 +3,7 @@ package com.example.basic
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -25,6 +26,8 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -33,96 +36,38 @@ import com.example.basic.ui.theme.JetpackBasicTheme
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
-    @OptIn(ExperimentalComposeUiApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContent {
-            val navController = rememberNavController()
-
-            NavHost(
-                navController = navController,
-                startDestination = "first"
+            val viewModel = viewModel<MainViewModel>()
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                composable("first") {
-                    FirstScreen(navController)
-                }
-                composable("second") {
-                    SecondScreen(navController)
-                }
-                composable("third/{value}") {
-                    ThirdScreen(
-                        navController = navController,
-                        value = it.arguments?.getString("value") ?: ""
-                    )
+                Text(
+                    text = viewModel.data.value
+                )
+                Button(
+                    onClick = {
+                        viewModel.setData("World")
+                    }
+                ) {
+                    Text("변경")
                 }
             }
         }
+
     }
 }
 
-@Composable
-fun FirstScreen(navController: NavHostController) {
-    val (value, setValue) = remember {
-        mutableStateOf("")
-    }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = "첫 화면")
-        Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = {
-            navController.navigate("second")
-        }) {
-            Text("두번째")
-        }
-        Spacer(modifier = Modifier.height(16.dp))
+class MainViewModel: ViewModel() {
+    private val _data = mutableStateOf("Hello")
+    val data: State<String> = _data
 
-        TextField(value = value, onValueChange = setValue)
-        Button(onClick = {
-            if(value.isNotEmpty()){
-                navController.navigate("third/$value")
-            }
-        }) {
-            Text("세번째")
-        }
-    }
-}
-
-@Composable
-fun SecondScreen(navController: NavHostController) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = "두번째 화면")
-        Button(onClick = {
-            navController.navigate("first")
-        }) {
-            Text("뒤로 가기")
-        }
-    }
-}
-
-@Composable
-fun ThirdScreen(navController: NavHostController, value: String) {
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(text = "세번째 화면")
-        Text(text = value)
-        Button(onClick = {
-            navController.navigate("first")
-        }) {
-            Text("뒤로 가기")
-        }
+    fun setData(str: String) {
+        _data.value = str
     }
 }
