@@ -25,6 +25,10 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.example.basic.ui.theme.JetpackBasicTheme
 import kotlinx.coroutines.launch
 
@@ -33,36 +37,92 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            val (text, setValue) = remember {
-                mutableStateOf("")
-            }
+            val navController = rememberNavController()
 
-            val scaffoldState = rememberScaffoldState()
-            val scope = rememberCoroutineScope()
-            val keyboardController = LocalSoftwareKeyboardController.current
-
-            Scaffold(
-                scaffoldState = scaffoldState
+            NavHost(
+                navController = navController,
+                startDestination = "first"
             ) {
-                Column(
-                    modifier = Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    TextField(
-                        value = text,
-                        onValueChange = setValue,
+                composable("first") {
+                    FirstScreen(navController)
+                }
+                composable("second") {
+                    SecondScreen(navController)
+                }
+                composable("third/{value}") {
+                    ThirdScreen(
+                        navController = navController,
+                        value = it.arguments?.getString("value") ?: ""
                     )
-                    Button(onClick = {
-                        scope.launch {
-                            scaffoldState.snackbarHostState.showSnackbar("$text is good.")
-                        }
-                        keyboardController?.hide()
-                    }) {
-                        Text("Click")
-                    }
                 }
             }
+        }
+    }
+}
+
+@Composable
+fun FirstScreen(navController: NavHostController) {
+    val (value, setValue) = remember {
+        mutableStateOf("")
+    }
+
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = "첫 화면")
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = {
+            navController.navigate("second")
+        }) {
+            Text("두번째")
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+
+        TextField(value = value, onValueChange = setValue)
+        Button(onClick = {
+            if(value.isNotEmpty()){
+                navController.navigate("third/$value")
+            }
+        }) {
+            Text("세번째")
+        }
+    }
+}
+
+@Composable
+fun SecondScreen(navController: NavHostController) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = "두번째 화면")
+        Button(onClick = {
+            navController.navigate("first")
+        }) {
+            Text("뒤로 가기")
+        }
+    }
+}
+
+@Composable
+fun ThirdScreen(navController: NavHostController, value: String) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(text = "세번째 화면")
+        Text(text = value)
+        Button(onClick = {
+            navController.navigate("first")
+        }) {
+            Text("뒤로 가기")
         }
     }
 }
