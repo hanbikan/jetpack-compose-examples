@@ -22,12 +22,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -91,4 +93,38 @@ fun HomeScreen() {
             }
         }
     }
+}
+
+@Composable
+fun ResultScreen(bmi: Double) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("비만도 계산기") }
+            )
+        }
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text("과체중", fontSize = 28.sp)
+            Spacer(modifier = Modifier.height(50.dp))
+            Image(
+                painter = painterResource(id = R.drawable.ic_baseline_sentiment_dissatisfied_24),
+                contentDescription = null,
+                modifier = Modifier.size(100.dp),
+                colorFilter = ColorFilter.tint(
+                    color = Color.Black
+                )
+            )
+        }
+    }
+}
+
+@Preview
+@Composable
+fun Preview() {
+    ResultScreen(bmi = 35.0)
 }
