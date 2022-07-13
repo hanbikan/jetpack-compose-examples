@@ -37,11 +37,13 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.basic.ui.theme.JetpackBasicTheme
 import kotlinx.coroutines.launch
+import kotlin.math.pow
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val viewModel = viewModel<BmiViewModel>()
             val navController = rememberNavController()
 
             NavHost(
@@ -49,11 +51,14 @@ class MainActivity : ComponentActivity() {
                 startDestination = "Home"
             ) {
                 composable(route = "Home") {
-                    HomeScreen(navController)
+                    HomeScreen { height, weight ->
+                        viewModel.calculateBmi(height, weight)
+                        navController.navigate("Result")
+                    }
                 }
                 composable(route = "Result") {
                     ResultScreen(
-                        bmi = 35.0,
+                        bmi = viewModel.bmi.value,
                         navController = navController
                     )
                 }
@@ -63,7 +68,9 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun HomeScreen(navController: NavController) {
+fun HomeScreen(
+    onClickResult: (Double, Double) -> Unit
+) {
     val (height, setHeight) = rememberSaveable {
         mutableStateOf("")
     }
@@ -101,7 +108,9 @@ fun HomeScreen(navController: NavController) {
 
             Button(
                 onClick = {
-                    navController.navigate("Result")
+                    if(height.isNotEmpty() && weight.isNotEmpty()){
+                        onClickResult(height.toDouble(), weight.toDouble())
+                    }
                 },
                 modifier = Modifier.align(Alignment.End)
             ) {
@@ -113,6 +122,18 @@ fun HomeScreen(navController: NavController) {
 
 @Composable
 fun ResultScreen(navController: NavController, bmi: Double) {
+    val text = when {
+        bmi >= 35 -> "고도 비만"
+        bmi >= 18.5 -> "정상"
+        else -> "저체중"
+    }
+
+    val imageRes = when {
+        bmi >= 35 -> R.drawable.ic_baseline_sentiment_very_dissatisfied_24
+        bmi >= 18.5 -> R.drawable.ic_baseline_sentiment_dissatisfied_24
+        else -> R.drawable.ic_baseline_sentiment_satisfied_24
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -134,10 +155,10 @@ fun ResultScreen(navController: NavController, bmi: Double) {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("과체중", fontSize = 28.sp)
+            Text(text, fontSize = 28.sp)
             Spacer(modifier = Modifier.height(50.dp))
             Image(
-                painter = painterResource(id = R.drawable.ic_baseline_sentiment_dissatisfied_24),
+                painter = painterResource(id = imageRes),
                 contentDescription = null,
                 modifier = Modifier.size(100.dp),
                 colorFilter = ColorFilter.tint(
@@ -145,5 +166,14 @@ fun ResultScreen(navController: NavController, bmi: Double) {
                 )
             )
         }
+    }
+}
+
+class BmiViewModel: ViewModel() {
+    private val _bmi = mutableStateOf(0.0)
+    val bmi: State<Double> = _bmi
+
+    fun calculateBmi(height: Double, weight: Double) {
+        _bmi.value = weight / (height / 100.0).pow(2.0)
     }
 }
