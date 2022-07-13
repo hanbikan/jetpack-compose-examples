@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -43,13 +44,25 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            HomeScreen()
+            val navController = rememberNavController()
+
+            NavHost(
+                navController = navController,
+                startDestination = "Home"
+            ) {
+                composable(route = "Home") {
+                    HomeScreen(navController)
+                }
+                composable(route = "Result") {
+                    ResultScreen(bmi = 35.0)
+                }
+            }
         }
     }
 }
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(navController: NavController) {
     val (height, setHeight) = rememberSaveable {
         mutableStateOf("")
     }
@@ -86,7 +99,9 @@ fun HomeScreen() {
             Spacer(modifier = Modifier.height(8.dp))
 
             Button(
-                onClick = {},
+                onClick = {
+                    navController.navigate("Result")
+                },
                 modifier = Modifier.align(Alignment.End)
             ) {
                 Text("결과")
