@@ -4,16 +4,14 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.*
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.runtime.*
@@ -54,7 +52,10 @@ class MainActivity : ComponentActivity() {
                     HomeScreen(navController)
                 }
                 composable(route = "Result") {
-                    ResultScreen(bmi = 35.0)
+                    ResultScreen(
+                        bmi = 35.0,
+                        navController = navController
+                    )
                 }
             }
         }
@@ -111,11 +112,20 @@ fun HomeScreen(navController: NavController) {
 }
 
 @Composable
-fun ResultScreen(bmi: Double) {
+fun ResultScreen(navController: NavController, bmi: Double) {
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("비만도 계산기") }
+                title = { Text("비만도 계산기") },
+                navigationIcon = {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "Home",
+                        modifier = Modifier.clickable {
+                            navController.popBackStack()
+                        }
+                    )
+                }
             )
         }
     ) {
@@ -136,10 +146,4 @@ fun ResultScreen(bmi: Double) {
             )
         }
     }
-}
-
-@Preview
-@Composable
-fun Preview() {
-    ResultScreen(bmi = 35.0)
 }
