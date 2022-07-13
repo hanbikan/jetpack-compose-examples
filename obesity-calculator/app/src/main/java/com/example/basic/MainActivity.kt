@@ -39,7 +39,20 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-
+            HomeScreen()
         }
+    }
+}
+
+@Composable
+fun HomeScreen() {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text("비만도 계산기") }
+            )
+        }
+    ) {
+
     }
 }
