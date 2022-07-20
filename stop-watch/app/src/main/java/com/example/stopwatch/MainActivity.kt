@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.stopwatch.ui.theme.StopWatchTheme
 import java.util.*
 import kotlin.concurrent.timer
@@ -27,7 +28,19 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-
+            val viewModel = viewModel<MainViewModel>()
+            MainScreen(
+                second = viewModel.second.value,
+                millisecond = viewModel.millisecond.value,
+                isRunning = viewModel.isRunning.value,
+                lapTimes = viewModel.lapTimes.value,
+                onReset = { viewModel.reset() },
+                onToggle = { isRunning ->
+                    if(isRunning) viewModel.pause()
+                    else viewModel.start()
+                },
+                onLapTime = { viewModel.recordLapTime() }
+            )
         }
     }
 }
@@ -55,8 +68,8 @@ class MainViewModel: ViewModel() {
 
         timerTask = timer(period = 10) {
             time++
-            _second.value = time / 1000
-            _millisecond.value = time % 1000
+            _second.value = time / 100
+            _millisecond.value = time % 100
         }
     }
 
