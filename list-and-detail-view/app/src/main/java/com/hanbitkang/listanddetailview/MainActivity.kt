@@ -3,13 +3,18 @@ package com.hanbitkang.listanddetailview
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import coil.compose.AsyncImage
+import com.hanbitkang.listanddetailview.model.Pokemon
 import com.hanbitkang.listanddetailview.ui.theme.ListAndDetailViewTheme
 
 class MainActivity : ComponentActivity() {
@@ -22,7 +27,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    Greeting("Android")
+                    PokemonList()
                 }
             }
         }
@@ -30,14 +35,26 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
+fun PokemonList(pokemonList: List<Pokemon>) {
+    LazyColumn {
+        items(pokemonList) { pokemon ->
+            PokemonCard(pokemon)
+        }
+    }
 }
 
-@Preview(showBackground = true)
 @Composable
-fun DefaultPreview() {
-    ListAndDetailViewTheme {
-        Greeting("Android")
+fun PokemonCard(pokemon: Pokemon) {
+    Row {
+        PokemonImage(pokemonImageUrl = pokemon.getImageUrl())
+        Text(text = pokemon.name?: "")
     }
+}
+
+@Composable
+fun PokemonImage(pokemonImageUrl: String?) {
+    AsyncImage(
+        model = pokemonImageUrl,
+        contentDescription = null
+    )
 }
