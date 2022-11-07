@@ -27,7 +27,11 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    PokemonList()
+                    val pokemons = listOf(
+                        Pokemon("https://pokeapi.co/api/v2/pokemon/1/", "first"),
+                        Pokemon("https://pokeapi.co/api/v2/pokemon/2/", "second")
+                    )
+                    PokemonList(pokemons)
                 }
             }
         }
