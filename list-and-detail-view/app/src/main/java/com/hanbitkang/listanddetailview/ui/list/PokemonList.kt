@@ -1,9 +1,6 @@
 package com.hanbitkang.listanddetailview.ui.list
 
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Card
@@ -35,18 +32,21 @@ fun PokemonList(navController: NavController) {
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun PokemonCard(pokemon: Pokemon, navController: NavController) {
-    Card(onClick = {
-        navController.navigate(PokemonDetailDestination.route)
-    }) {
+    Card(
+        onClick = {
+            navController.navigate(PokemonDetailDestination.route)
+        },
+        modifier = Modifier.fillMaxWidth()
+    ) {
         Row(
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             PokemonImage(pokemonImageUrl = pokemon.getImageUrl(), 96)
+            Spacer(modifier = Modifier.width(16.dp))
             Text(
                 text = pokemon.name?: "",
-                fontSize = 32.sp,
-                modifier = Modifier.padding(start = 16.dp)
+                fontSize = 32.sp
             )
         }
     }
