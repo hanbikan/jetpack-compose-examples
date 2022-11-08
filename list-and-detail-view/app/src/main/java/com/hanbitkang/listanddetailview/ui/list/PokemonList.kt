@@ -34,7 +34,7 @@ fun PokemonCard(pokemon: Pokemon) {
         modifier = Modifier.padding(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        PokemonImage(pokemonImageUrl = pokemon.getImageUrl())
+        PokemonImage(pokemonImageUrl = pokemon.getImageUrl(), 96)
         Text(
             text = pokemon.name?: "",
             fontSize = 32.sp,
@@ -44,12 +44,12 @@ fun PokemonCard(pokemon: Pokemon) {
 }
 
 @Composable
-fun PokemonImage(pokemonImageUrl: String?) {
+fun PokemonImage(pokemonImageUrl: String?, size: Int) {
     AsyncImage(
         model = pokemonImageUrl,
         contentDescription = null,
         modifier = Modifier
-            .width(96.dp)
-            .height(96.dp)
+            .width(size.dp)
+            .height(size.dp)
     )
 }

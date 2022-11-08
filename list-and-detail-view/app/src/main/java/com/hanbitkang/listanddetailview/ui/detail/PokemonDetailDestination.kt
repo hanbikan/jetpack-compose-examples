@@ -10,6 +10,6 @@ object PokemonDetailDestination : NavigationDestination {
 
 fun NavGraphBuilder.pokemonDetailGraph() {
     composable(route = PokemonDetailDestination.route) {
-
+        PokemonDetail()
     }
 }
