@@ -19,6 +19,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.hanbitkang.listanddetailview.model.Pokemon
+import com.hanbitkang.listanddetailview.ui.detail.pokemonDetailGraph
 import com.hanbitkang.listanddetailview.ui.list.PokemonListDestination
 import com.hanbitkang.listanddetailview.ui.list.pokemonListGraph
 import com.hanbitkang.listanddetailview.ui.theme.ListAndDetailViewTheme
@@ -35,6 +36,7 @@ class MainActivity : ComponentActivity() {
                 ) {
                     NavHost(navController = rememberNavController(), startDestination = PokemonListDestination.route) {
                         pokemonListGraph()
+                        pokemonDetailGraph()
                     }
                 }
             }
