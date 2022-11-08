@@ -14,8 +14,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.hanbitkang.listanddetailview.model.Pokemon
+import com.hanbitkang.listanddetailview.ui.list.PokemonListDestination
+import com.hanbitkang.listanddetailview.ui.list.pokemonListGraph
 import com.hanbitkang.listanddetailview.ui.theme.ListAndDetailViewTheme
 
 class MainActivity : ComponentActivity() {
@@ -28,46 +33,11 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    val pokemonList = (1 until 20)
-                        .map { Pokemon("https://pokeapi.co/api/v2/pokemon/$it/", "Pokemon$it") }
-                    PokemonList(pokemonList)
+                    NavHost(navController = rememberNavController(), startDestination = PokemonListDestination.route) {
+                        pokemonListGraph()
+                    }
                 }
             }
         }
     }
-}
-
-@Composable
-fun PokemonList(pokemonList: List<Pokemon>) {
-    LazyColumn {
-        items(pokemonList) { pokemon ->
-            PokemonCard(pokemon)
-        }
-    }
-}
-
-@Composable
-fun PokemonCard(pokemon: Pokemon) {
-    Row(
-        modifier = Modifier.padding(16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        PokemonImage(pokemonImageUrl = pokemon.getImageUrl())
-        Text(
-            text = pokemon.name?: "",
-            fontSize = 32.sp,
-            modifier = Modifier.padding(start = 16.dp)
-        )
-    }
-}
-
-@Composable
-fun PokemonImage(pokemonImageUrl: String?) {
-    AsyncImage(
-        model = pokemonImageUrl,
-        contentDescription = null,
-        modifier = Modifier
-            .width(96.dp)
-            .height(96.dp)
-    )
 }
