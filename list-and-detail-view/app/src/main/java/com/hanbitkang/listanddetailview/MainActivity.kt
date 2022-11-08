@@ -34,9 +34,10 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    NavHost(navController = rememberNavController(), startDestination = PokemonListDestination.route) {
-                        pokemonListGraph()
-                        pokemonDetailGraph()
+                    val navController = rememberNavController()
+                    NavHost(navController = navController, startDestination = PokemonListDestination.route) {
+                        pokemonListGraph(navController)
+                        pokemonDetailGraph(navController)
                     }
                 }
             }
