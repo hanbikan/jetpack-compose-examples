@@ -1,5 +1,6 @@
 package com.hanbitkang.listanddetailview.ui.list
 
+import android.net.Uri
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -13,6 +14,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import coil.compose.AsyncImage
+import com.google.gson.Gson
 import com.hanbitkang.listanddetailview.model.Pokemon
 import com.hanbitkang.listanddetailview.ui.detail.PokemonDetailDestination
 
@@ -34,7 +36,7 @@ fun PokemonList(navController: NavController) {
 fun PokemonCard(pokemon: Pokemon, navController: NavController) {
     Card(
         onClick = {
-            navController.navigate(PokemonDetailDestination.route)
+            navController.navigate("${PokemonDetailDestination.route}/${pokemon.url.split("/".toRegex()).dropLast(1).last()}")
         },
         modifier = Modifier.fillMaxWidth()
     ) {

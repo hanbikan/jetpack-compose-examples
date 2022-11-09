@@ -12,8 +12,7 @@ import com.hanbitkang.listanddetailview.model.Pokemon
 import com.hanbitkang.listanddetailview.ui.list.PokemonImage
 
 @Composable
-fun PokemonDetail() {
-    val pokemon = Pokemon("https://pokeapi.co/api/v2/pokemon/1/", "Pokemon1")
+fun PokemonDetail(pokemon: Pokemon) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.fillMaxSize()
